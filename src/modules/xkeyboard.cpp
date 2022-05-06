@@ -5,6 +5,8 @@
 #include "modules/meta/base.inl"
 #include "x11/atoms.hpp"
 #include "x11/connection.hpp"
+#include <iostream>
+#include <algorithm>
 
 POLYBAR_NS
 
@@ -111,7 +113,9 @@ namespace modules {
   void xkeyboard_module::update() {
     if (m_layout) {
       m_layout->reset_tokens();
-      m_layout->replace_token("%name%", m_keyboard->group_name(m_keyboard->current()));
+      auto group_name = m_keyboard->group_name(m_keyboard->current());
+      std::transform(group_name.begin(), group_name.end(), group_name.begin(), ::tolower);
+      m_layout->replace_token("%name%", group_name.substr(0, 2));
       m_layout->replace_token("%variant%", m_keyboard->variant_name(m_keyboard->current()));
 
       auto const current_layout = m_keyboard->layout_name(m_keyboard->current());
