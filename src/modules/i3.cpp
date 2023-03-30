@@ -19,6 +19,10 @@ namespace modules {
 
     auto socket_path = i3ipc::get_socketpath();
 
+    int attempts = 5;
+    while (--attempts > 0 && !file_util::exists(socket_path)) {
+      sleep(80ms);
+    }
     if (!file_util::exists(socket_path)) {
       throw module_error("Could not find socket: " + (socket_path.empty() ? "<empty>" : socket_path));
     }
